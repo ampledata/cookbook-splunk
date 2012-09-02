@@ -19,7 +19,7 @@
 #
 
 
-download_file = File.join(Dir.mktempdir, node['splunk']['server']['package'])
+download_file = File.join(Dir.mktmpdir, node['splunk']['server']['package'])
 
 
 execute 'Splunk Server: Enable Boot-Start' do
