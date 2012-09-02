@@ -19,30 +19,11 @@
 #
 
 
-download_file = File.join(Dir.mktmpdir, node['splunk']['server']['package'])
-
-
-execute 'Splunk Server: Enable Boot-Start' do
-  action :nothing
-	command '/opt/splunk/bin/splunk enable boot-start --answer-yes'
-end
-
-
-package 'Splunk Server: Install Package' do
-  package_name node['splunk']['server']['package']
-  action :nothing
-  notifies :run, resources(:execute => 'Splunk Server: Enable Boot-Start')
-  source download_file
-end
+download_file = File.join('/usr/src', node['splunk']['server']['package'])
 
 
 remote_file 'Splunk Server: Download Package' do
   action :nothing
-  notifies(
-    :install,
-    resources(:package => 'Splunk Server: Install Package'),
-    :immediately
-  )
   path download_file
   source node['splunk']['server']['download_url']
 end
@@ -62,4 +43,26 @@ http_request ['HEAD', node['splunk']['server']['download_url']].join(' ') do
   if File.exists?(download_file)
     headers 'If-Modified-Since' => File.mtime(download_file).httpdate
   end
+end
+
+
+package 'Splunk Server: Install Package' do
+  provider Chef::Provider::Package::Dpkg
+  subscribes(
+    :install,
+    resources(:remote_file => 'Splunk Server: Download Package'),
+    :immediately
+  )
+  package_name node['splunk']['server']['package']
+  source download_file
+end
+
+
+execute 'Splunk Server: Enable Boot-Start' do
+	command '/opt/splunk/bin/splunk enable boot-start --answer-yes'
+end
+
+
+service 'splunk' do
+  action :start
 end
