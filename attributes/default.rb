@@ -19,4 +19,5 @@
 
 
 default['splunk']['server']['package'] = 'splunk-4.3.3-128297-linux-2.6-amd64.deb'
-default['splunk']['server']['download_url'] = 'http://download.splunk.com/releases/4.3.3/splunk/linux/splunk-4.3.3-128297-linux-2.6-amd64.deb'
+default['splunk']['server']['download_url'] = 'http://download.splunk.com/' +
+  'releases/4.3.3/splunk/linux/splunk-4.3.3-128297-linux-2.6-amd64.deb'
