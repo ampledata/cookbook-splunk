@@ -59,6 +59,7 @@ end
 
 
 execute 'Splunk Server: Enable Boot-Start' do
+  creates '/etc/init.d/splunk'
 	command '/opt/splunk/bin/splunk enable boot-start --answer-yes'
 end
 
